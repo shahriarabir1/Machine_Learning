@@ -1,0 +1,49 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import re
+import nltk
+from sklearn.model_selection import  train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
+from sklearn import svm
+from sklearn.metrics import accuracy_score
+from sklearn.linear_model import LogisticRegression
+import math
+d1=pd.read_csv("diabetes.csv")
+d1.head()
+d1.isnull().sum()
+d1.shape
+d1.describe()
+d1["Outcome"].value_counts()
+d1.groupby('Outcome').mean()
+x=d1.drop(columns="Outcome",axis=1)
+y=d1["Outcome"]
+print(x)
+std=StandardScaler()
+std.fit(x)
+std1=std.transform(x)
+x=std1
+y=d1['Outcome']
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,stratify=y,random_state=2)
+cl=svm.SVC(kernel='linear')
+cl.fit(x_train,y_train)
+x_pred=cl.predict(x_train)
+acu=accuracy_score(x_pred,y_train)
+print(acu)
+x_pred=cl.predict(x_test)
+acu=accuracy_score(x_pred,y_test)
+input_data=(4,110,92,0,0,37.6,0.191,30)
+num=np.asarray(input_data)
+reshape=num.reshape(1,-1)
+std_data=std.transform(reshape)
+pred=cl.predict(std_data)
+print(pred)
+if(pred[0]==0):
+    print("No Diabetice")
+else:
+    print("Diabetic")
